@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import { Text, View, Image, TextInput, Button, StyleSheet} from "react-native";
 import {LinearGradient} from 'expo-linear-gradient';
 
@@ -34,4 +34,4 @@ export default splashScreen = function () {
    
    
   );
-};
+}; */
