@@ -2,169 +2,127 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, Pressable, Image, Modal } from 'react-native';
 
 const style = StyleSheet.create({
-    estiloLogo: {
-        marginTop: 25,
-        height: 200,
-        width: 300,
-        borderRadius: 25,
-        marginBottom: 25
-    },
     container: {
+        backgroundColor: 'white',
+        display: 'flex',
+        justifyContent: 'center',
         alignItems: 'center',
+        gap: 20,
+        top: 0,
+        width: '100%',
         height: '100%'
     },
-    botoes: {
-        flexDirection: 'row',
-        gap: 20,
-        marginTop: 40
+    container1: {
+        marginBottom: 40
     },
-    botao: {
-        backgroundColor: '#ff6d00',
-        alignItems: 'center',
-        padding: 20,
-        borderRadius: 10,
-        width: 120,
-        margin: 10
-    },
-    txt: {
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    inputBox: {
-        backgroundColor: '#AFCBDF',
-        width: 320,
-        marginTop: 50,
-        marginBottom: 50,
-        padding: 10,
-        borderRadius: 10,
+    titulo: {
+        fontSize: 35,
         fontWeight: 'bold'
     },
-    modalContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#2C3E50',
-        opacity: 0.98,
-        borderRadius: 20,
-        marginTop: 180,
-        marginRight: 40,
-        marginLeft: 40,
-        padding: 20,
-        flexDirection: 'column'
+
+
+    txt: {
+        fontSize: 17,
     },
-    txtmodal2: {
-        color: 'white',
-        marginBottom: 20
-    },
-    botoesmodal: {
-        flexDirection: 'row'
-    },
-    botaomodal: {
-        backgroundColor: '#ff6d00',
-        alignItems: 'center',
-        padding: 20,
+    inputT: {
+        backgroundColor: 'white',
         borderRadius: 10,
-        width: 120,
-        margin: 10
+        width: 330,
+        padding: 8,
+        margin: 5,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 15
+    },
+
+    container2: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 20
+    },
+    botao: {
+        backgroundColor: '#AFCBDF',
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10,
+        width: 150,
+        padding: 15,
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: 40,
+        justifyContent: 'center'
+    },
+    txt1: {
+        fontSize: 15
     }
+
+
 });
 
-export default function BackScreen() {
-    const [saldo, setSaldo] = useState(7320.92);
-    const [valor, setValor] = useState('');
-    const Logoist = 'https://www.pensarcursos.com.br/blog/wp-content/uploads/2024/03/itau.jpg';
+export default function Cadastro() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        senha: '',
+    });
 
-    const [showModal, setShowModal] = useState(false);
-    const [modalMessage, setModalMessage] = useState('');
-    const [actionType, setActionType] = useState('');
+    const [showSenha, setShowSenha] = useState(false);
+    const [mensagem, setMensagem] = useState(null);
 
-    const openConfirmationModal = (type) => {
-        setActionType(type);
-        if (type === 'depositar') {
-            setModalMessage('Você está prestes a depositar. A taxa é de 1%. Continuar?');
-        } else if (type === 'sacar') {
-            setModalMessage('Você está prestes a sacar. A taxa é de 0.5%. Continuar?');
+    const handleSubmit = async () => {
+        if (!formData.name || !formData.email || !formData.password) {
+          alert("Todos os campos devem ser preenchidos");
         }
-        setShowModal(true);
-    };
-
-    const handleConfirm = () => {
-        if (actionType === 'depositar') {
-            depositar();
-        } else if (actionType === 'sacar') {
-            sacar();
+        try {
+          const response = await fetch('https://taskhub-s37f.onrender.com/auth/signup', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+        } catch (error) {
+          console.error(error);
         }
-        setShowModal(false);
-    };
-
-    const depositar = () => {
-        const valorNumerico = parseFloat(valor);
-        if (!isNaN(valorNumerico) && valorNumerico > 0) {
-            const novoSaldo = saldo + valorNumerico + valorNumerico * 0.02;
-            setSaldo(novoSaldo);
-            setValor('');
-        }
-    };
-
-    const sacar = () => {
-        const valorNumerico = parseFloat(valor);
-        if (!isNaN(valorNumerico) && valorNumerico > 0) {
-            const taxa = valorNumerico * 0.005;
-            const novoSaldo = saldo - valorNumerico - taxa;
-            if (novoSaldo >= 0) {
-                setSaldo(novoSaldo);
-                setValor('');
-            } else {
-                alert('Saldo insuficiente.');
-            }
-        }
-    };
+      };
 
     return (
-        <View style={style.container}>
-            <View>
-                <Image
-                    style={style.estiloLogo}
-                    source={{ uri: Logoist }}
-                />
-            </View>
-            <View>
-                <Text style={style.txtsaldo2}>Seu saldo:</Text>
-                <Text style={style.txtsaldo3}>{saldo.toFixed(2)}</Text>
-            </View>
-            <View>
-                <TextInput
-                    onChangeText={setValor}
-                    value={valor}
-                    placeholder='Insira o valor desejado!'
-                    keyboardType='numeric'
-                    style={style.inputBox}
-                />
-            </View>
-            <View style={style.botoes}>
-                <Pressable style={style.botao} onPress={() => openConfirmationModal('depositar')}>
-                    <Text style={style.txt}>Deposite</Text>
-                </Pressable>
-                <Pressable style={style.botao} onPress={() => openConfirmationModal('sacar')}>
-                    <Text style={style.txt}>Saque</Text>
-                </Pressable>
-            </View>
-            <Modal
-                transparent={true}
-                visible={showModal}
-                onRequestClose={() => setShowModal(false)}
-            >
-                <View style={style.modalContainer}>
-                    <Text style={style.txtmodal2}>{modalMessage}</Text>
-                    <View style={style.botoesmodal}>
-                        <Pressable style={style.botaomodal} onPress={handleConfirm}>
-                            <Text style={style.txt}>Confirmar</Text>
-                        </Pressable>
-                        <Pressable style={style.botaomodal} onPress={() => setShowModal(false)}>
-                            <Text style={style.txt}>Cancelar</Text>
-                        </Pressable>
-                    </View>
+
+        <>
+            <View style={style.container}>
+
+
+                <View style={style.container1}>
+                    <Text style={style.titulo}> Cadastre-se </Text>
                 </View>
-            </Modal>
-        </View>
+
+                <View>
+                    <Text style={style.txt}> Nome </Text>
+                    <TextInput style={style.inputT} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} />
+                </View>
+                <View>
+                    <Text style={style.txt}> Email </Text>
+                    <TextInput style={style.inputT} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} />
+                </View>
+                <View>
+                    <Text style={style.txt}> Senha </Text>
+                    <TextInput style={style.inputT} value={formData.password} onChangeText={(text) => setFormData({ ...formData, password: text })} />
+                </View>
+
+
+                <View style={style.container2}>
+                    <Pressable style={style.botao} onPress={() => handleSubmit()}>
+                        <Text style={style.txt1}>Cadastre-se</Text>
+                    </Pressable>
+                    <Pressable style={style.botao} onPress={() => handleSubmit()}>
+                        <Text style={style.txt1}>Google</Text>
+                    </Pressable>
+                </View>
+
+
+            </View>
+        </>
+
     );
 }
