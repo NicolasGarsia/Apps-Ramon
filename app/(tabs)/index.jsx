@@ -1,128 +1,137 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Pressable, Image, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
-const style = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
+const styles = StyleSheet.create({
+    container1: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 20,
-        top: 0,
-        width: '100%',
-        height: '100%'
+        flex: 1,
+
     },
-    container1: {
-        marginBottom: 40
+    container: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        gap: 20,
+
+    },
+    containerT: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        marginTop: 100
+    },
+    containerP: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+    },
+    containerM: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        marginBottom: 200
     },
     titulo: {
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: 'bold'
     },
-
-
-    txt: {
-        fontSize: 17,
-    },
-    inputT: {
-        backgroundColor: 'white',
-        borderRadius: 10,
-        width: 330,
-        padding: 8,
-        margin: 5,
-        borderWidth: 2,
-        borderColor: 'black',
-        borderRadius: 15
-    },
-
-    container2: {
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 20
-    },
-    botao: {
-        backgroundColor: '#AFCBDF',
-        borderWidth: 2,
-        borderColor: 'black',
-        borderRadius: 10,
+    pickerI: {
         width: 150,
-        padding: 15,
-        display: 'flex',
-        alignItems: 'center',
-        marginTop: 40,
-        justifyContent: 'center'
+        borderRadius: 10,
+        padding: 10,
+        backgroundColor:'#AFCBDF'
     },
-    txt1: {
-        fontSize: 15
+    txt5: {
+        color: 'black',
+        fontSize: 20
     }
-
-
 });
 
-export default function Cadastro() {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        senha: '',
-    });
+const Pokemon = () => {
+    const [pokemon, setPokemon] = useState('');
+    const [pokemonTypes, setPokemonTypes] = useState([]);
+    const [selectedType, setSelectedType] = useState('');
+    const [filteredPokemons, setFilteredPokemons] = useState([]);
 
-    const [showSenha, setShowSenha] = useState(false);
-    const [mensagem, setMensagem] = useState(null);
+    useEffect(() => {
+        // tipos
+        fetch('https://pokeapi.co/api/v2/type')
+            .then(response => response.json())
+            .then(data => setPokemonTypes(data.results))
+            .catch(error => console.log('Error fetching Pokémon types:', error));
 
-    const handleSubmit = async () => {
-        if (!formData.name || !formData.email || !formData.password) {
-          alert("Todos os campos devem ser preenchidos");
+        // inicial
+        fetch('https://pokeapi.co/api/v2/pokemon?limit=1000')
+            .then(response => response.json())
+            .then(data => setFilteredPokemons(data.results))
+            .catch(error => console.log('Error fetching Pokémon list:', error));
+    }, []);
+
+    useEffect(() => {
+        if (selectedType) {
+            fetch(`https://pokeapi.co/api/v2/type/${selectedType}`)
+                .then(response => response.json())
+                .then(data => {
+                    const pokemonOfType = data.pokemon.map(p => p.pokemon);
+                    setFilteredPokemons(pokemonOfType);
+                })
+                .catch(error => console.log('Error fetching Pokémon by type:', error));
+        } else {
+
+            fetch('https://pokeapi.co/api/v2/pokemon?limit=1000')
+                .then(response => response.json())
+                .then(data => setFilteredPokemons(data.results))
+                .catch(error => console.log('Error fetching Pokémon list:', error));
         }
-        try {
-          const response = await fetch('https://taskhub-s37f.onrender.com/auth/signup', {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          });
-        } catch (error) {
-          console.error(error);
-        }
-      };
+    }, [selectedType]);
 
     return (
-
-        <>
-            <View style={style.container}>
-
-
-                <View style={style.container1}>
-                    <Text style={style.titulo}> Cadastre-se </Text>
-                </View>
-
-                <View>
-                    <Text style={style.txt}> Nome </Text>
-                    <TextInput style={style.inputT} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} />
-                </View>
-                <View>
-                    <Text style={style.txt}> Email </Text>
-                    <TextInput style={style.inputT} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} />
-                </View>
-                <View>
-                    <Text style={style.txt}> Senha </Text>
-                    <TextInput style={style.inputT} value={formData.password} onChangeText={(text) => setFormData({ ...formData, password: text })} />
-                </View>
-
-
-                <View style={style.container2}>
-                    <Pressable style={style.botao} onPress={() => handleSubmit()}>
-                        <Text style={style.txt1}>Cadastre-se</Text>
-                    </Pressable>
-                    <Pressable style={style.botao} onPress={() => handleSubmit()}>
-                        <Text style={style.txt1}>Google</Text>
-                    </Pressable>
-                </View>
-
-
+        <View style={styles.container1}>
+            <View style={styles.containerT}>
+                <Text style={styles.titulo}> Select Your POKIMON </Text>
             </View>
-        </>
 
+            <View style={styles.container}>
+                <View style={styles.containerP}>
+                    <Text >Selecione o Tipo</Text>
+                    <Picker
+                        style={styles.pickerI}
+                        selectedValue={selectedType}
+                        onValueChange={(itemValue) => setSelectedType(itemValue)}
+                    >
+                        <Picker.Item label="Todos os Tipos" value="" />
+                        {pokemonTypes.map(type => (
+                            <Picker.Item key={type.name} label={type.name} value={type.name} />
+                        ))}
+                    </Picker>
+                </View>
+                <View style={styles.containerP}>
+                    <Text>Selecione o Pokémon</Text>
+                    <Picker
+                        style={styles.pickerI}
+                        selectedValue={pokemon}
+                        onValueChange={(itemValue) => setPokemon(itemValue)}
+                    >
+                        <Picker.Item label="Selecione o Pokémon" value="" />
+                        {filteredPokemons.map((item, index) => (
+                            <Picker.Item key={index} label={item.name} value={item.name} />
+                        ))}
+                    </Picker>
+                </View>
+            </View>
+            <View style={styles.containerM}>
+                {pokemon ? <Text style={styles.txt5}>Você selecionou {pokemon}</Text> : null}
+            </View>
+        </View>
     );
-}
+};
+
+export default Pokemon;
