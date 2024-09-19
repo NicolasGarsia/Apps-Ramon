@@ -2,7 +2,6 @@ import React from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
 import { Link } from 'expo-router';
 
-
 const style = StyleSheet.create({
     container: {
         backgroundColor: 'white',
@@ -43,7 +42,7 @@ const style = StyleSheet.create({
         marginBottom: 20,
     },
     box3: {
-        marginBottom: 20
+        marginBottom: 20,
     },
     img2: {
         width: 80,
@@ -53,16 +52,20 @@ const style = StyleSheet.create({
     boxT: {
         flexDirection: 'column',
         justifyContent: 'center',
+        flexShrink: 1, // Adicionado para permitir que a caixa de texto encolha
     },
     textoP: {
         color: 'black',
         fontWeight: 'bold',
         fontSize: 20,
+        flexShrink: 1, // Adicionado para permitir que o texto encolha
+        maxWidth: '70%', // Limita a largura do texto
     },
     textoP2: {
         color: 'black',
         fontSize: 15,
         marginTop: 5,
+        flexShrink: 1, // Adicionado para permitir que o texto encolha
     },
 });
 
@@ -75,34 +78,29 @@ const Filmes = () => {
                 </Link>
                 <Text style={style.textoT}>Filmes</Text>
             </View>
+
             <ScrollView contentContainerStyle={style.box}>
                 <View style={style.box3}>
-                    <View style={style.box2}>
-                        <Image style={style.img2} source={require('../../../assets/images/cmtd.png')} />
-                        <View style={style.boxT}>
-                            <Text style={style.textoP}>Como Treinar o Seu Dragão</Text>
-                            <Text style={style.textoP2}>Sobre o jogo</Text>
+                    {[
+                        { title: "Como Treinar o Seu Dragão", img: require('../../../assets/images/cmtd.png') },
+                        { title: "Como Treinar o Seu Dragão 2", img: require('../../../assets/images/cmtd1.png') },
+                        { title: "Como Treinar o Seu Dragão 3", img: require('../../../assets/images/cmtd3.png') },
+                        { title: "Ben 10 - A Corrida Contra o Tempo", img: require('../../../assets/images/ben10.png') },
+                        { title: "It - A Coisa", img: require('../../../assets/images/it.png') },
+                        { title: "Halloween Kills", img: require('../../../assets/images/hallowen.png') },
+                    ].map((filme, index) => (
+                        <View style={style.box2} key={index}>
+                            <Image style={style.img2} source={filme.img} />
+                            <View style={style.boxT}>
+                                <Text style={style.textoP} numberOfLines={1} ellipsizeMode="tail">{filme.title}</Text>
+                                <Text style={style.textoP2}>Sobre o Filme</Text>
+                            </View>
                         </View>
-                    </View>
-
-                    <View style={style.box2}>
-                        <Image style={style.img2} source={require('../../../assets/images/cmtd1.png')} />
-                        <View style={style.boxT}>
-                            <Text style={style.textoP}>Como Treinar o Seu Dragão 2</Text>
-                            <Text style={style.textoP2}>Sobre o jogo</Text>
-                        </View>
-                    </View>
-                    <View style={style.box2}>
-                        <Image style={style.img2} source={require('../../../assets/images/cmtd3.png')} />
-                        <View style={style.boxT}>
-                            <Text style={style.textoP}>Como Treinar o Seu Dragão 3</Text>
-                            <Text style={style.textoP2}>Sobre o jogo</Text>
-                        </View>
-                    </View>
+                    ))}
                 </View>
             </ScrollView>
         </View>
     );
-}
+};
 
-export default Filmes
+export default Filmes;
