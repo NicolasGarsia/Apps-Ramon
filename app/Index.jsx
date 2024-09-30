@@ -57,6 +57,10 @@ export default Home = () => {
             <Link href="./Pages/Banco">
                 <Text style={style.texto}> Banco </Text>
             </Link>
+
+            <Link href="./Pages/iFome/home">
+                <Text style={style.texto}> iFome </Text>
+            </Link>
             </View>
 
         </View>
