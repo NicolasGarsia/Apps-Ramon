@@ -50,7 +50,7 @@ export default function App() {
                 <Text style={styles.headerText}>iFome</Text>
             </View>
             <View style={styles.carrinho}>
-                <Link href={'../cart'}><Image
+                <Link href={'../cart/index'}><Image
                     source={{ uri: '../../assets/images/cart.png' }}
                     style={styles.carrinhoImagem}
                 /></Link>
